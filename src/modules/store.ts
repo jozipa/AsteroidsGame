@@ -43,27 +43,27 @@ img.src = '../../public/asteroids-2x.png'
 
 type GameObjectWrapper = {
     key: string;
-    utilities: GameObject | Ship; 
+    utilities: GameObject; 
 }
 
 let gameObjectsArr: GameObjectWrapper[] = []
-
+let ship: Ship; 
 
 export function loadGameObjects(): Promise<void> {
     return new Promise((resolve, reject) => {
         img.onload = () => {
             spriteArray.forEach(element => {
                 if (element.key == 'ship') {
-                    gameObjectsArr.push({ key: element.key, utilities: new Ship(img, element.frame, { x: 400, y: 400 }, 0) });
+                    ship = new Ship(img, element.frame, { x: 400, y: 400 }, 0) 
                 } else {
                     gameObjectsArr.push({ key: element.key, utilities: new GameObject(img, element.frame, { x: 400, y: 400 }) });
                 }
             });
-            resolve(); // Po załadowaniu obrazu i inicjalizacji tablicy rozwiązujemy obietnicę
+            resolve(); 
         };
 
         img.onerror = (error) => {
-            reject(error); // Jeśli wystąpił błąd podczas ładowania obrazu, odrzucamy obietnicę
+            reject(error); 
         };
     });
 }
@@ -71,5 +71,5 @@ export function loadGameObjects(): Promise<void> {
 
 
 
-export {data, gameObjectsArr}
+export {data, gameObjectsArr, ship}
 

@@ -56,12 +56,26 @@ class Ship{
       shipSkin.h,
     );
   }
+  powerOn(){
+    console.log('powwweer');
+    this.skin = 1
+  }
+  powerOff(){
+    console.log('powwweer');
+    this.skin = 0
+  }
+  shoot(){
+    console.log('shooting');
+  }
+  rightTurn(){
+    console.log('shootiturningRightng');
+  }
+  leftTurn(){
+    console.log('turning left');
+  }
 
   
 }
-
-
-
 
 
 export {Ship, GameObject}
