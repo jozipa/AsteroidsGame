@@ -4,29 +4,33 @@ export function keysEvent() {
     window.addEventListener("keydown", (event) => {
         switch (event.key) {
             case "ArrowUp":
-                ship.powerOn();
+                ship.skin = 1;
                 break;
             case "ArrowLeft":
-                 ship.leftTurn();
+                ship.rotationDirection = -1;
                 break;
             case "ArrowRight":
-                 ship.rightTurn();
+                ship.rotationDirection = 1;
                 break;
             case " ": // Spacja
-                 ship.shoot();
+                ship.shoot();
                 break;
         }
     });
     window.addEventListener("keyup", (event) => {
         switch (event.key) {
             case "ArrowUp":
-                ship.powerOff();
+                ship.skin = 0;
                 break;
             case "ArrowLeft":
-                 //ship.leftTurn();
+                if (ship.rotationDirection == -1) {
+                    ship.rotationDirection = 0;
+                }
                 break;
             case "ArrowRight":
-                 //ship.rightTurn();
+                if (ship.rotationDirection == 1) {
+                    ship.rotationDirection = 0;
+                }
                 break;
         }
     });

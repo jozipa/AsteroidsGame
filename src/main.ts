@@ -1,4 +1,4 @@
-import {data, loadGameObjects, ship} from './modules/store.ts'
+import { data, loadGameObjects, ship } from './modules/store.ts'
 import { keysEvent } from './utils.ts';
 
 
@@ -9,16 +9,16 @@ canvas.width = 800;
 canvas.height = 800;
 
 
-let lastTime = 0; 
+let lastTime = 0;
 
 const gameLoop = (timestamp: number) => {
-    const deltaTime = timestamp - lastTime; 
+    const deltaTime = timestamp - lastTime;
     lastTime = timestamp;
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height); 
-    
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
     updateGame(deltaTime);
-   
+
     drawGame(ctx);
 
     requestAnimationFrame(gameLoop);
@@ -40,18 +40,18 @@ loadGameObjects()
 
 
 
-function drawGame(ctx: CanvasRenderingContext2D){
+function drawGame(ctx: CanvasRenderingContext2D) {
     ship.draw(ctx)
 }
 
-function updateGame(deltaTime: number){
-    
+function updateGame(deltaTime: number) {
+    ship.positionUpdate()
 }
 
 
 
 
 
-   
+
 
 
