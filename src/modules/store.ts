@@ -54,7 +54,7 @@ export function loadGameObjects(): Promise<void> {
         img.onload = () => {
             spriteArray.forEach(element => {
                 if (element.key == 'ship') {
-                    ship = new Ship(img, element.frame, { x: 400, y: 400 }, 0) 
+                    ship = new Ship(img, element.frame, { x: 0, y: 0 }, 0) 
                 } else {
                     gameObjectsArr.push({ key: element.key, utilities: new GameObject(img, element.frame, { x: 400, y: 400 }) });
                 }
