@@ -1,7 +1,13 @@
 import spriteData from '../spritesheet.json'
+import { addNewObject } from '../utils';
 import {GameObject, Ship} from './ObjectClasses';
 
 export interface Position {
+    x: number;
+    y: number;
+}
+
+export interface Vector {
     x: number;
     y: number;
 }
@@ -30,38 +36,24 @@ interface Spritesheet {
     bullet2: Frame;
 }
 
+const spriteSheetData: Spritesheet = spriteData;
 
-const data: Spritesheet = spriteData;
-
-const spriteArray = Object.entries(data).map(([key, value]) => {
-    return { key: key, frame: value };
-});
-
-
-let img = new Image()
+let img: HTMLImageElement = new Image()
 img.src = '../../public/asteroids-2x.png'
 
-type GameObjectWrapper = {
-    key: string;
-    utilities: GameObject; 
-}
 
-let gameObjectsArr: GameObjectWrapper[] = []
+let gameObjectsArr: GameObject[] = []
 let ship: Ship; 
 
 export function loadGameObjects(): Promise<void> {
     return new Promise((resolve, reject) => {
         img.onload = () => {
-            spriteArray.forEach(element => {
-                if (element.key == 'ship') {
-                    ship = new Ship(img, element.frame, { x: 0, y: 0 }, 0) 
-                } else {
-                    gameObjectsArr.push({ key: element.key, utilities: new GameObject(img, element.frame, { x: 400, y: 400 }) });
-                }
-            });
+            ship = new Ship(img, spriteSheetData.ship, { x: 400, y: 400 }, 0) 
+            addNewObject(gameObjectsArr, img, spriteSheetData.bigRock1, "Big")
+            addNewObject(gameObjectsArr, img, spriteSheetData.bigRock2, "Big")
+            addNewObject(gameObjectsArr, img, spriteSheetData.bigRock3, "Big")
             resolve(); 
         };
-
         img.onerror = (error) => {
             reject(error); 
         };
@@ -71,5 +63,5 @@ export function loadGameObjects(): Promise<void> {
 
 
 
-export {data, gameObjectsArr, ship}
+export {spriteSheetData, gameObjectsArr, ship, img}
 

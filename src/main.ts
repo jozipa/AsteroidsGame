@@ -1,7 +1,8 @@
-import { data, loadGameObjects, ship } from './modules/store.ts'
+import { gameObjectsArr, loadGameObjects, ship } from './modules/store.ts'
 import { keysEvent } from './utils.ts';
 
 
+const speed = document.getElementById('speed') as HTMLElement
 const canvas = document.getElementById('app') as HTMLCanvasElement;
 const ctx = canvas.getContext('2d')!;
 
@@ -32,6 +33,7 @@ loadGameObjects()
     .then(() => {
         keysEvent()
         requestAnimationFrame(gameLoop);
+       
     })
     .catch((error) => {
         console.error('Błąd podczas ładowania gry:', error);
@@ -42,10 +44,17 @@ loadGameObjects()
 
 function drawGame(ctx: CanvasRenderingContext2D) {
     ship.draw(ctx)
+    gameObjectsArr.forEach(element => {
+        element.draw(ctx)
+    });
+    speed.innerText = ship.velocity.toFixed(2);
 }
 
 function updateGame(deltaTime: number) {
     ship.positionUpdate()
+    gameObjectsArr.forEach(element => {
+        element.positionUpdate()
+    });
 }
 
 
