@@ -1,11 +1,11 @@
 import { Frame, Position, Vector, spriteSheetData, img, gameObjectsArr } from './store'
-
+import { addChildrenObject } from '../utils';
 
 class GameObject {
   image: HTMLImageElement;
   visualData: Frame;
   position: Position
-  direction: Vector 
+  direction: Vector
   velocity: number
   type: string
 
@@ -48,42 +48,48 @@ class GameObject {
     this.position.x += this.direction.x * this.velocity
     this.position.y += this.direction.y * this.velocity
 
-    
+
 
     if (this.position.x < -60) this.position.x = mapWidth;      // Wychodzi z lewej → pojawia się po prawej
     if (this.position.x > mapWidth) this.position.x = -60;      // Wychodzi z prawej → pojawia się po lewej
     if (this.position.y < -60) this.position.y = mapHeight;     // Wychodzi z góry → pojawia się na dole
     if (this.position.y > mapHeight) this.position.y = -60;     // Wychodzi z dołu → pojawia się na górze
   }
-  destruction(){
+  destruction() {
     switch (this.type) {
       case "Big":
         const index = gameObjectsArr.indexOf(this);
         if (index !== -1) {
           gameObjectsArr.splice(index, 1);
         }
+        for (let i = 0; i < 2; i++) {
+          addChildrenObject(gameObjectsArr, img, spriteSheetData.mediumRock[Math.floor(Math.random() * 3)], this.position, "Medium")
+        }
         break;
       case "Medium":
-        
-      break;
+        const index1 = gameObjectsArr.indexOf(this);
+        if (index1 !== -1) {
+          gameObjectsArr.splice(index1, 1);
+        }
+        break;
       case "Small":
-        
-      break;
-      
+
+        break;
+
     }
   }
 }
 
 class Bullet {
-  direction: Vector 
+  direction: Vector
   position: Position
   velocity: number = 20
   distance: number = 600
-  alive: boolean  = true
+  alive: boolean = true
   image: HTMLImageElement
   visualData: Frame;
-  
-  constructor(image: HTMLImageElement,visualData: Frame,position: Position, direction: Vector){
+
+  constructor(image: HTMLImageElement, visualData: Frame, position: Position, direction: Vector) {
     this.image = image
     this.visualData = visualData
     this.direction = direction
@@ -109,27 +115,30 @@ class Bullet {
     ctx.restore()
   }
   positionUpdate(mapWidth: number = 800, mapHeight: number = 800) {
-    if(this.distance <= 0 ) this.alive = false
+    if (this.distance <= 0) this.alive = false
     this.position.x += this.direction.x * this.velocity
     this.position.y += this.direction.y * this.velocity
     this.distance -= this.velocity
-    
+
 
     if (this.position.x < -60) this.position.x = mapWidth;      // Wychodzi z lewej → pojawia się po prawej
     if (this.position.x > mapWidth) this.position.x = -60;      // Wychodzi z prawej → pojawia się po lewej
     if (this.position.y < -60) this.position.y = mapHeight;     // Wychodzi z góry → pojawia się na dole
     if (this.position.y > mapHeight) this.position.y = -60;     // Wychodzi z dołu → pojawia się na górze
-  
+
     gameObjectsArr.forEach(obj => {
-      let distance = Math.sqrt((this.position.x-obj.position.x)**2+(this.position.y-obj.position.y)**2)
-      if(distance<52){
+      let distance = Math.sqrt((this.position.x - obj.position.x) ** 2 + (this.position.y - obj.position.y) ** 2)
+      if (obj.type == "Big" && distance < 52) {  // kolizja z duzymi asteroidami
+        obj.destruction()
+        this.alive = false
+      } else if (obj.type == "Medium" && distance < 52) {  // kolizja ze średnimi asteroidami
         obj.destruction()
         this.alive = false
       }
     });
-  
+
   }
-  
+
 }
 
 class Ship {
@@ -139,10 +148,10 @@ class Ship {
   skin: number
   rotation: number = 0; // Kąt obrotu w radianach
   rotationDirection: number = 0 //  -1 - lewo  0 - brak   1 - prawo  
-  velocity: number = 0   
+  velocity: number = 0
   flightDirection: number = 0
   bullets: Bullet[] = []
-  
+
 
   constructor(image: HTMLImageElement, visualData: Frame[], position: Position, skin: number) {
     this.image = image
@@ -158,7 +167,7 @@ class Ship {
 
     // Ustawienie punktu obrotu na środek statku
     ctx.translate(this.position.x, this.position.y);
-    ctx.rotate(this.rotation); 
+    ctx.rotate(this.rotation);
 
     // Rysowanie statku - teraz rysujemy względem pozycji (0,0), bo przesunęliśmy układ
     ctx.drawImage(
@@ -177,7 +186,7 @@ class Ship {
 
     // Rysowanie pocisków
     this.bullets.forEach((bullet) => bullet.draw(ctx));
-}
+  }
   positionUpdate(mapWidth: number = 800, mapHeight: number = 800) {
     if (this.velocity > 0) {
       this.velocity -= 0.02  //prędkosc maleje jesli juz jakas jest
@@ -192,19 +201,19 @@ class Ship {
 
     if (this.skin == 1) {
       // Wktor kierunku lotu
-      let flightVector = { 
-        x: Math.cos(this.flightDirection)*this.velocity,
-        y: Math.sin(this.flightDirection)*this.velocity
+      let flightVector = {
+        x: Math.cos(this.flightDirection) * this.velocity,
+        y: Math.sin(this.flightDirection) * this.velocity
       };
       // Wektor kierunku obrotu
       let rotationVector = {
-        x: Math.cos(this.rotation)*0.1,
-        y: Math.sin(this.rotation)*0.1
+        x: Math.cos(this.rotation) * 0.1,
+        y: Math.sin(this.rotation) * 0.1
       };
       // Z Updateowany wektor kierunku lotu
       let finalVector = {
-        x: flightVector.x+rotationVector.x,
-        y: flightVector.y+rotationVector.y
+        x: flightVector.x + rotationVector.x,
+        y: flightVector.y + rotationVector.y
       }
       function vectorToAngle(x: number, y: number) {
         return Math.atan2(y, x); // Zwraca kąt w radianach
@@ -229,14 +238,10 @@ class Ship {
   shoot() {
     let bulletX = this.position.x + Math.cos(this.rotation) * 32
     let bulletY = this.position.y + Math.sin(this.rotation) * 32
-    
-    this.bullets.push(new Bullet(img ,spriteSheetData.bullet2,{x: bulletX, y: bulletY}, {x: Math.cos(this.rotation), y: Math.sin(this.rotation)}))
+
+    this.bullets.push(new Bullet(img, spriteSheetData.bullet2, { x: bulletX, y: bulletY }, { x: Math.cos(this.rotation), y: Math.sin(this.rotation) }))
   }
 }
 
 
 export { Ship, GameObject }
-
-function addNewObject(gameObjectsArr: GameObject[], img: HTMLImageElement, mediumRock1: Frame, arg3: string) {
-  throw new Error('Function not implemented.');
-}

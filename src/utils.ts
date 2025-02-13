@@ -1,20 +1,28 @@
-import { ship, Frame } from "./modules/store";
+import { ship, Frame, Position } from "./modules/store";
 import { GameObject } from "./modules/ObjectClasses";
 
-export function addNewObject(gameArr: Object[], img: HTMLImageElement, sprite: Frame, type: string): void{
+export function addNewObject(gameArr: Object[], img: HTMLImageElement, sprite: Frame, type: string): void {
     const randomAngleRadians = Math.random() * Math.PI * 2;
     let velocity = Math.floor(Math.random() * 5) + 1
     let positionX = 0
     let positionY = 0
-    if(Math.floor(Math.random() * 2)){ // 50% szans
+    if (Math.floor(Math.random() * 2)) { // 50% szans
         positionX = Math.floor(Math.random() * 801)
-        positionY =  Math.floor(Math.random() * 2) * 800
+        positionY = Math.floor(Math.random() * 2) * 800
     } else {
         positionY = Math.floor(Math.random() * 801)
-        positionX =  Math.floor(Math.random() * 2) * 800
+        positionX = Math.floor(Math.random() * 2) * 800
     }
-    gameArr.push(new GameObject(img, sprite, {x: positionX, y: positionY},{x: Math.cos(randomAngleRadians), y: Math.sin(randomAngleRadians)}, velocity, type))
+    gameArr.push(new GameObject(img, sprite, { x: positionX, y: positionY }, { x: Math.cos(randomAngleRadians), y: Math.sin(randomAngleRadians) }, velocity, type))
 }
+
+
+export function addChildrenObject(gameArr: Object[], img: HTMLImageElement, sprite: Frame, position: Position, type: string): void {
+    const randomAngleRadians = Math.random() * Math.PI * 2;
+    let velocity = Math.floor(Math.random() * 5) + 1
+    gameArr.push(new GameObject(img, sprite, position, { x: Math.cos(randomAngleRadians), y: Math.sin(randomAngleRadians) }, velocity, type))
+}
+
 
 export function keysEvent() {
     window.addEventListener("keydown", (event) => {
