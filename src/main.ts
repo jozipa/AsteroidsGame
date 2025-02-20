@@ -26,19 +26,15 @@ const gameLoop = (timestamp: number) => {
 };
 
 
-
-
-
 loadGameObjects()
     .then(() => {
         keysEvent()
         requestAnimationFrame(gameLoop);
-       
+
     })
     .catch((error) => {
         console.error('Błąd podczas ładowania gry:', error);
     });
-
 
 
 

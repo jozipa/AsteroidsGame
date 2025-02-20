@@ -35,12 +35,6 @@ class GameObject {
       this.visualData.h
     );
 
-    // ctx.strokeStyle = "blue";
-    // ctx.lineWidth = 2;
-    // ctx.beginPath();
-    // ctx.arc(0, 0, 52, 0, Math.PI * 2);
-    // ctx.stroke();
-
     ctx.restore()
   }
   positionUpdate(mapWidth: number = 800, mapHeight: number = 800) {
@@ -58,22 +52,29 @@ class GameObject {
   destruction() {
     switch (this.type) {
       case "Big":
+        console.log("BIG DESTRUCTION");
+
         const index = gameObjectsArr.indexOf(this);
         if (index !== -1) {
           gameObjectsArr.splice(index, 1);
         }
-        for (let i = 0; i < 2; i++) {
-          addChildrenObject(gameObjectsArr, img, spriteSheetData.mediumRock[Math.floor(Math.random() * 3)], this.position, "Medium")
-        }
+        addChildrenObject(gameObjectsArr, img, spriteSheetData.mediumRock, this.position, "Medium")
+
         break;
       case "Medium":
+        console.log("Medium Destruction");
         const index1 = gameObjectsArr.indexOf(this);
         if (index1 !== -1) {
           gameObjectsArr.splice(index1, 1);
         }
+        addChildrenObject(gameObjectsArr, img, spriteSheetData.smallRock, this.position, "Small")
         break;
       case "Small":
-
+        console.log("small destruction");
+        const index2 = gameObjectsArr.indexOf(this);
+        if (index2 !== -1) {
+          gameObjectsArr.splice(index2, 1);
+        }
         break;
 
     }
@@ -128,12 +129,15 @@ class Bullet {
 
     gameObjectsArr.forEach(obj => {
       let distance = Math.sqrt((this.position.x - obj.position.x) ** 2 + (this.position.y - obj.position.y) ** 2)
-      if (obj.type == "Big" && distance < 52) {  // kolizja z duzymi asteroidami
-        obj.destruction()
+      if (obj.type == "Big" && distance < 52 && this.alive) {  // kolizja z duzymi asteroidami
         this.alive = false
-      } else if (obj.type == "Medium" && distance < 52) {  // kolizja ze średnimi asteroidami
         obj.destruction()
+      } else if (obj.type == "Medium" && distance < 30 && this.alive) {  // kolizja ze średnimi asteroidami
         this.alive = false
+        obj.destruction()
+      } else if (obj.type == "Small" && distance < 17 && this.alive) {  // kolizja z malymi asteroidami
+        this.alive = false
+        obj.destruction()
       }
     });
 

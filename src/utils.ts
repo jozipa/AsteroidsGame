@@ -17,10 +17,19 @@ export function addNewObject(gameArr: Object[], img: HTMLImageElement, sprite: F
 }
 
 
-export function addChildrenObject(gameArr: Object[], img: HTMLImageElement, sprite: Frame, position: Position, type: string): void {
-    const randomAngleRadians = Math.random() * Math.PI * 2;
-    let velocity = Math.floor(Math.random() * 5) + 1
-    gameArr.push(new GameObject(img, sprite, position, { x: Math.cos(randomAngleRadians), y: Math.sin(randomAngleRadians) }, velocity, type))
+export function addChildrenObject(gameArr: Object[], img: HTMLImageElement, sprite: Frame[], position: Position, type: string): void {
+    for (let i = 0; i < 2; i++) {
+        const randomAngleRadians = Math.random() * Math.PI * 2;
+        let velocity = (Math.random() * 5) + 0.5
+        let skin = Math.floor(Math.random() * 3)
+
+        // Kopiujemy wartości pozycji, zamiast używać tej samej referencji
+        let newPosition = { x: position.x, y: position.y };
+
+        gameArr.push(new GameObject(img, sprite[skin], newPosition, { x: Math.cos(randomAngleRadians), y: Math.sin(randomAngleRadians) }, velocity, type))
+    }
+    console.log(gameArr);
+
 }
 
 
