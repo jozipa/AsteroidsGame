@@ -1,5 +1,7 @@
 import { Frame, Position, Vector, spriteSheetData, img, gameObjectsArr } from './store'
 import { addChildrenObject } from '../utils';
+import { mapWidth, mapHeight } from '../main';
+
 
 class GameObject {
   image: HTMLImageElement;
@@ -37,7 +39,7 @@ class GameObject {
 
     ctx.restore()
   }
-  positionUpdate(mapWidth: number = 800, mapHeight: number = 800) {
+  positionUpdate() {
 
     this.position.x += this.direction.x * this.velocity
     this.position.y += this.direction.y * this.velocity
@@ -115,7 +117,7 @@ class Bullet {
 
     ctx.restore()
   }
-  positionUpdate(mapWidth: number = 800, mapHeight: number = 800) {
+  positionUpdate() {
     if (this.distance <= 0) this.alive = false
     this.position.x += this.direction.x * this.velocity
     this.position.y += this.direction.y * this.velocity
@@ -173,14 +175,14 @@ class Ship {
     ctx.translate(this.position.x, this.position.y);
     ctx.rotate(this.rotation);
 
-    // Rysowanie statku - teraz rysujemy względem pozycji (0,0), bo przesunęliśmy układ
+    // Rysowanie statku
     ctx.drawImage(
       this.image,
       shipSkin.x0,
       shipSkin.y0,
       shipSkin.w,
       shipSkin.h,
-      -shipSkin.w / 2, // Przesuwamy obraz tak, aby jego środek był na (0,0)
+      -shipSkin.w / 2,
       -shipSkin.h / 2,
       shipSkin.w,
       shipSkin.h
@@ -190,10 +192,22 @@ class Ship {
 
     // Rysowanie pocisków
     this.bullets.forEach((bullet) => bullet.draw(ctx));
+
+    // Rysowanie białych kropek w określonych punktach
+    this.drawDot(ctx, this.position.x + Math.cos(this.rotation) * 32, this.position.y + Math.sin(this.rotation) * 32);
+    this.drawDot(ctx, this.position.x - Math.cos(this.rotation) * 16, this.position.y - Math.sin(this.rotation) * 16);
   }
-  positionUpdate(mapWidth: number = 800, mapHeight: number = 800) {
+
+  // Funkcja pomocnicza do rysowania kropek
+  drawDot(ctx: CanvasRenderingContext2D, x: number, y: number): void {
+    ctx.fillStyle = "white";
+    ctx.beginPath();
+    ctx.arc(x, y, 3, 0, Math.PI * 2); // Kropka o promieniu 3
+    ctx.fill();
+  }
+  positionUpdate() {
     if (this.velocity > 0) {
-      this.velocity -= 0.02  //prędkosc maleje jesli juz jakas jest
+      this.velocity -= 0.01  //prędkosc maleje jesli juz jakas jest
     }
 
     if (this.rotationDirection == 1) {
@@ -211,8 +225,8 @@ class Ship {
       };
       // Wektor kierunku obrotu
       let rotationVector = {
-        x: Math.cos(this.rotation) * 0.1,
-        y: Math.sin(this.rotation) * 0.1
+        x: Math.cos(this.rotation) * 0.05,
+        y: Math.sin(this.rotation) * 0.05
       };
       // Z Updateowany wektor kierunku lotu
       let finalVector = {
@@ -225,7 +239,7 @@ class Ship {
       this.flightDirection = vectorToAngle(finalVector.x, finalVector.y)
 
       this.velocity = Math.sqrt(finalVector.x ** 2 + finalVector.y ** 2);  // przyspieszanie jeśli statek dodaje gazu
-      if (this.velocity > 15) this.velocity = 15
+      if (this.velocity > 3) this.velocity = 3
     }
 
     this.position.y += Math.sin(this.flightDirection) * this.velocity
@@ -240,6 +254,8 @@ class Ship {
     this.bullets = this.bullets.filter((bullet) => bullet.alive);
   }
   shoot() {
+    console.log('shoooot');
+
     let bulletX = this.position.x + Math.cos(this.rotation) * 32
     let bulletY = this.position.y + Math.sin(this.rotation) * 32
 

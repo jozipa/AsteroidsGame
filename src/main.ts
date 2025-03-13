@@ -6,8 +6,10 @@ const speed = document.getElementById('speed') as HTMLElement
 const canvas = document.getElementById('app') as HTMLCanvasElement;
 const ctx = canvas.getContext('2d')!;
 
-canvas.width = 800;
+canvas.width = 1200;
 canvas.height = 800;
+let mapWidth = canvas.width
+let mapHeight = canvas.height
 
 
 let lastTime = 0;
@@ -22,7 +24,7 @@ const gameLoop = (timestamp: number) => {
 
     drawGame(ctx);
 
-    requestAnimationFrame(gameLoop);
+    setTimeout(requestAnimationFrame, 1000 / 60, gameLoop);
 };
 
 
@@ -30,7 +32,6 @@ loadGameObjects()
     .then(() => {
         keysEvent()
         requestAnimationFrame(gameLoop);
-
     })
     .catch((error) => {
         console.error('Błąd podczas ładowania gry:', error);
@@ -52,6 +53,8 @@ function updateGame(deltaTime: number) {
         element.positionUpdate()
     });
 }
+
+export { mapWidth, mapHeight }
 
 
 

@@ -3,7 +3,7 @@ import { GameObject } from "./modules/ObjectClasses";
 
 export function addNewObject(gameArr: Object[], img: HTMLImageElement, sprite: Frame, type: string): void {
     const randomAngleRadians = Math.random() * Math.PI * 2;
-    let velocity = Math.floor(Math.random() * 5) + 1
+    let velocity = (Math.random() * 3) + 0.1
     let positionX = 0
     let positionY = 0
     if (Math.floor(Math.random() * 2)) { // 50% szans
@@ -20,7 +20,7 @@ export function addNewObject(gameArr: Object[], img: HTMLImageElement, sprite: F
 export function addChildrenObject(gameArr: Object[], img: HTMLImageElement, sprite: Frame[], position: Position, type: string): void {
     for (let i = 0; i < 2; i++) {
         const randomAngleRadians = Math.random() * Math.PI * 2;
-        let velocity = (Math.random() * 5) + 0.5
+        let velocity = (Math.random() * 3) + 0.1
         let skin = Math.floor(Math.random() * 3)
 
         // Kopiujemy wartości pozycji, zamiast używać tej samej referencji
