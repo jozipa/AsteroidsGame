@@ -24,7 +24,8 @@ const gameLoop = (timestamp: number) => {
 
     drawGame(ctx);
 
-    setTimeout(requestAnimationFrame, 1000 / 60, gameLoop);
+    //setTimeout(requestAnimationFrame, 1000 / 60, gameLoop);
+    requestAnimationFrame(gameLoop)
 };
 
 

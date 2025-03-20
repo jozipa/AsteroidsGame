@@ -1,14 +1,75 @@
+/* Import nowoczesnej czcionki */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
+/* Ustawienia ogólne */
 body {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    background-color: black;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    color: whitesmoke;
+  margin: 0;
+  overflow: hidden;
+  background: black;
+  font-family: 'Orbitron', sans-serif;
+  color: #80d0ff;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  position: relative;
 }
-#app {
-    border: 2px solid red;
+
+/* Styl dla canvasa */
+canvas {
+  width: 1200px;
+  height: 800px;
+  background: rgba(0, 0, 0, 0.5);
+  border: 2px solid #80d0ff;
+  box-shadow: 0 0 20px rgba(128, 208, 255, 0.8);
+}
+
+/* HUD - Prędkość na środku, życie nad lewym rogiem canvasu */
+#hud {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 24px;
+}
+
+#speed {
+  padding: 10px 20px;
+  background: rgba(128, 208, 255, 0.1);
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(128, 208, 255, 0.5);
+  text-align: center;
+  width: 120px;
+  color: #80d0ff;
+}
+
+#lives {
+  position: absolute;
+  top: 20px;
+  left: calc(50% - 600px);
+  padding: 10px 20px;
+  font-size: 26px;
+  font-weight: bold;
+  color: #80d0ff;
+  text-shadow: 0 0 10px rgba(128, 208, 255, 0.8);
+} 
+
+/* Animowane gwiazdy w tle */
+@keyframes stars {
+  from { background-position: 0 0; }
+  to { background-position: -1000px 1000px; }
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('https://www.transparenttextures.com/patterns/stardust.png');
+  opacity: 0.5;
+  animation: stars 60s linear infinite;
 }
