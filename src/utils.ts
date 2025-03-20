@@ -13,11 +13,11 @@ export function addNewObject(gameArr: Object[], img: HTMLImageElement, sprite: F
         positionY = Math.floor(Math.random() * 801)
         positionX = Math.floor(Math.random() * 2) * 800
     }
-    gameArr.push(new GameObject(img, sprite, { x: positionX, y: positionY }, { x: Math.cos(randomAngleRadians), y: Math.sin(randomAngleRadians) }, velocity, type))
+    gameArr.push(new GameObject(img, sprite, { x: positionX, y: positionY }, { x: Math.cos(randomAngleRadians), y: Math.sin(randomAngleRadians) }, velocity, type, 52))
 }
 
 
-export function addChildrenObject(gameArr: Object[], img: HTMLImageElement, sprite: Frame[], position: Position, type: string): void {
+export function addChildrenObject(gameArr: Object[], img: HTMLImageElement, sprite: Frame[], position: Position, type: string, collisionDistance: number): void {
     for (let i = 0; i < 2; i++) {
         const randomAngleRadians = Math.random() * Math.PI * 2;
         let velocity = (Math.random() * 3) + 0.1
@@ -26,7 +26,7 @@ export function addChildrenObject(gameArr: Object[], img: HTMLImageElement, spri
         // Kopiujemy wartości pozycji, zamiast używać tej samej referencji
         let newPosition = { x: position.x, y: position.y };
 
-        gameArr.push(new GameObject(img, sprite[skin], newPosition, { x: Math.cos(randomAngleRadians), y: Math.sin(randomAngleRadians) }, velocity, type))
+        gameArr.push(new GameObject(img, sprite[skin], newPosition, { x: Math.cos(randomAngleRadians), y: Math.sin(randomAngleRadians) }, velocity, type, collisionDistance))
     }
     console.log(gameArr);
 
