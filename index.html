@@ -10,18 +10,28 @@
 </head>
 
 <body>
+  <div id="game">
+    <!-- Górny pasek (Speed + SCORE + LIVES) -->
+    <div id="topBar">
+      <div id="speedBox"><span id="speed">0</span></div>
+      <div id="score">0</div>
+      <div id="lives">Pozostałe życia: <a id="livesLeft">3</a></div>
+    </div>
 
-  <canvas id="app"></canvas>
+    <canvas id="app"></canvas>
 
-  <!-- HUD z informacjami -->
-  <div id="hud">
-    <div id="speed" class="hud-item">Prędkość: 0</div>
+    <!-- Komunikat Game Over -->
+    <div id="gameOver">
+      GAME OVER
+      Score: <a id="score2"></a>
+    </div>
   </div>
-
-  <!-- Wyświetlanie pozostałych żyć -->
-  <div id="lives">Pozostałe życia: 3</div>
 
   <script type="module" src="/src/main.ts"></script>
 </body>
+
+
+
+
 
 </html>

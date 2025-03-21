@@ -1,5 +1,15 @@
 import { ship, Frame, Position } from "./modules/store";
 import { GameObject } from "./modules/ObjectClasses";
+import { mapWidth, mapHeight } from "./main";
+
+export function outsideMapCheck(x: number, y: number){
+    if (x < -60) x = mapWidth;      // Wychodzi z lewej → pojawia się po prawej
+    if (x > mapWidth) x = -60;      // Wychodzi z prawej → pojawia się po lewej
+    if (y < -60) y = mapHeight;     // Wychodzi z góry → pojawia się na dole
+    if (y > mapHeight) y = -60;     // Wychodzi z dołu → pojawia się na górze
+    return {x: x,y: y}
+}
+
 
 export function addNewObject(gameArr: Object[], img: HTMLImageElement, sprite: Frame, type: string): void {
     const randomAngleRadians = Math.random() * Math.PI * 2;
@@ -7,11 +17,11 @@ export function addNewObject(gameArr: Object[], img: HTMLImageElement, sprite: F
     let positionX = 0
     let positionY = 0
     if (Math.floor(Math.random() * 2)) { // 50% szans
-        positionX = Math.floor(Math.random() * 801)
-        positionY = Math.floor(Math.random() * 2) * 800
+        positionX = Math.floor(Math.random() * mapWidth)
+        positionY = Math.floor(Math.random() * 2) * mapHeight
     } else {
-        positionY = Math.floor(Math.random() * 801)
-        positionX = Math.floor(Math.random() * 2) * 800
+        positionY = Math.floor(Math.random() * mapHeight)
+        positionX = Math.floor(Math.random() * 2) * mapWidth
     }
     gameArr.push(new GameObject(img, sprite, { x: positionX, y: positionY }, { x: Math.cos(randomAngleRadians), y: Math.sin(randomAngleRadians) }, velocity, type, 52))
 }

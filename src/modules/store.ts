@@ -42,10 +42,14 @@ let ship: Ship;
 export function loadGameObjects(): Promise<void> {
     return new Promise((resolve, reject) => {
         img.onload = () => {
-            ship = new Ship(img, spriteSheetData.ship, { x: 400, y: 400 }, 0)
+            ship = new Ship(img, spriteSheetData.ship, { x: 600, y: 400 }, 0)
             spriteSheetData.bigRock.forEach((frame) => {
                 addNewObject(gameObjectsArr, img, frame, "Big")
             })
+            spriteSheetData.bigRock.forEach((frame) => {
+                addNewObject(gameObjectsArr, img, frame, "Big")
+            })
+            
             resolve();
         };
         img.onerror = (error) => {

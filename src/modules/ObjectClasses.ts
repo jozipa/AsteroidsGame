@@ -1,7 +1,10 @@
-import { Frame, Position, Vector, spriteSheetData, img, gameObjectsArr } from './store'
-import { addChildrenObject } from '../utils';
+import { Frame, Position, Vector, spriteSheetData, img, gameObjectsArr} from './store'
+import { addChildrenObject, outsideMapCheck } from '../utils';
 import { mapWidth, mapHeight } from '../main';
 
+
+let scoreHtml: HTMLElement = document.getElementById('score')!
+let score: number = 0
 
 class GameObject {
   image: HTMLImageElement;
@@ -42,16 +45,13 @@ class GameObject {
     ctx.restore()
   }
   positionUpdate() {
-
     this.position.x += this.direction.x * this.velocity
     this.position.y += this.direction.y * this.velocity
 
-
-
-    if (this.position.x < -60) this.position.x = mapWidth;      // Wychodzi z lewej → pojawia się po prawej
-    if (this.position.x > mapWidth) this.position.x = -60;      // Wychodzi z prawej → pojawia się po lewej
-    if (this.position.y < -60) this.position.y = mapHeight;     // Wychodzi z góry → pojawia się na dole
-    if (this.position.y > mapHeight) this.position.y = -60;     // Wychodzi z dołu → pojawia się na górze
+    let position = outsideMapCheck(this.position.x, this.position.y)
+    
+    this.position.x = position.x
+    this.position.y = position.y
   }
   destruction() {
     switch (this.type) {
@@ -62,6 +62,8 @@ class GameObject {
         if (index !== -1) {
           gameObjectsArr.splice(index, 1);
         }
+        score +=20
+        scoreHtml.innerHTML = score.toString()
         addChildrenObject(gameObjectsArr, img, spriteSheetData.mediumRock, this.position, "Medium", 30)
 
         break;
@@ -71,6 +73,8 @@ class GameObject {
         if (index1 !== -1) {
           gameObjectsArr.splice(index1, 1);
         }
+        score +=50
+        scoreHtml.innerHTML = score.toString()
         addChildrenObject(gameObjectsArr, img, spriteSheetData.smallRock, this.position, "Small", 17)
         break;
       case "Small":
@@ -79,6 +83,8 @@ class GameObject {
         if (index2 !== -1) {
           gameObjectsArr.splice(index2, 1);
         }
+        score +=100
+        scoreHtml.innerHTML = score.toString()
         break;
 
     }
@@ -125,26 +131,19 @@ class Bullet {
     this.position.y += this.direction.y * this.velocity
     this.distance -= this.velocity
 
+    //sprawdzanie i korygacja gdy poza mapą
+    let position = outsideMapCheck(this.position.x, this.position.y)
+    this.position.x = position.x
+    this.position.y = position.y
 
-    if (this.position.x < -60) this.position.x = mapWidth;      // Wychodzi z lewej → pojawia się po prawej
-    if (this.position.x > mapWidth) this.position.x = -60;      // Wychodzi z prawej → pojawia się po lewej
-    if (this.position.y < -60) this.position.y = mapHeight;     // Wychodzi z góry → pojawia się na dole
-    if (this.position.y > mapHeight) this.position.y = -60;     // Wychodzi z dołu → pojawia się na górze
-
-    gameObjectsArr.forEach(obj => {
-      let distance = Math.sqrt((this.position.x - obj.position.x) ** 2 + (this.position.y - obj.position.y) ** 2)
-      if (obj.type == "Big" && distance < 52 && this.alive) {  // kolizja z duzymi asteroidami
+    //sprawdzanie trafienia
+    gameObjectsArr.forEach(asteroid => {
+      let distance = Math.sqrt((this.position.x - asteroid.position.x) ** 2 + (this.position.y - asteroid.position.y) ** 2)
+      if (distance < asteroid.collisionDistance && this.alive) {  
         this.alive = false
-        obj.destruction()
-      } else if (obj.type == "Medium" && distance < 30 && this.alive) {  // kolizja ze średnimi asteroidami
-        this.alive = false
-        obj.destruction()
-      } else if (obj.type == "Small" && distance < 17 && this.alive) {  // kolizja z malymi asteroidami
-        this.alive = false
-        obj.destruction()
-      }
+        asteroid.destruction()
+      } 
     });
-
   }
 
 }
@@ -160,8 +159,8 @@ class Ship {
   flightDirection: number = 0
   bullets: Bullet[] = []
   hitBoxes: Position[] = []
-
-
+  lives: number = 3
+  crashed: Boolean = false
 
   constructor(image: HTMLImageElement, visualData: Frame[], position: Position, skin: number) {
     this.image = image
@@ -195,13 +194,13 @@ class Ship {
     ctx.restore(); // Przywróć stan canvasu
 
     // Rysowanie pocisków
-    this.bullets.forEach((bullet) => bullet.draw(ctx));
+   this.bullets.forEach((bullet) => bullet.draw(ctx));
 
-    // Rysowanie białych kropek w określonych punktach
-    this.drawDot(ctx, this.position.x + Math.cos(this.rotation) * 32, this.position.y + Math.sin(this.rotation) * 32);//dziób
-    //pozycja srodka - cosinus rotacji razy odleglosc(ta sama prosta)+cos rotacji +90 aby trafić pod kątem prostym na róg statku
-    this.drawDot(ctx, (this.position.x - Math.cos(this.rotation) * 16) + Math.cos(this.rotation + (Math.PI / 2)) * 16, (this.position.y - Math.sin(this.rotation) * 16) + Math.sin(this.rotation + (Math.PI / 2)) * 16);
-    this.drawDot(ctx, (this.position.x - Math.cos(this.rotation) * 16) - Math.cos(this.rotation + (Math.PI / 2)) * 16, (this.position.y - Math.sin(this.rotation) * 16) - Math.sin(this.rotation + (Math.PI / 2)) * 16);
+    // // Rysowanie białych kropek w określonych punktach
+    // this.drawDot(ctx, this.position.x + Math.cos(this.rotation) * 32, this.position.y + Math.sin(this.rotation) * 32);//dziób
+    // //pozycja srodka - cosinus rotacji razy odleglosc(ta sama prosta)+cos rotacji +90 aby trafić pod kątem prostym na róg statku
+    // this.drawDot(ctx, (this.position.x - Math.cos(this.rotation) * 16) + Math.cos(this.rotation + (Math.PI / 2)) * 16, (this.position.y - Math.sin(this.rotation) * 16) + Math.sin(this.rotation + (Math.PI / 2)) * 16);
+    // this.drawDot(ctx, (this.position.x - Math.cos(this.rotation) * 16) - Math.cos(this.rotation + (Math.PI / 2)) * 16, (this.position.y - Math.sin(this.rotation) * 16) - Math.sin(this.rotation + (Math.PI / 2)) * 16);
 
   }
 
@@ -215,7 +214,7 @@ class Ship {
 
   positionUpdate() {
     if (this.velocity > 0) {
-      this.velocity -= 0.01  //prędkosc maleje jesli juz jakas jest
+      this.velocity -= 0.02  //prędkosc maleje jesli juz jakas jest  
     }
 
     if (this.rotationDirection == 1) {
@@ -225,7 +224,7 @@ class Ship {
     }
 
 
-    if (this.skin == 1) {
+    if (this.skin == 1 && !this.crashed) {
       // Wktor kierunku lotu
       let flightVector = {
         x: Math.cos(this.flightDirection) * this.velocity,
@@ -233,8 +232,8 @@ class Ship {
       };
       // Wektor kierunku obrotu
       let rotationVector = {
-        x: Math.cos(this.rotation) * 0.05,
-        y: Math.sin(this.rotation) * 0.05
+        x: Math.cos(this.rotation) * 0.1,
+        y: Math.sin(this.rotation) * 0.1
       };
       // Z Updateowany wektor kierunku lotu
       let finalVector = {
@@ -247,17 +246,20 @@ class Ship {
       this.flightDirection = vectorToAngle(finalVector.x, finalVector.y)
 
       this.velocity = Math.sqrt(finalVector.x ** 2 + finalVector.y ** 2);  // przyspieszanie jeśli statek dodaje gazu
-      if (this.velocity > 3) this.velocity = 3
+      
+      if (this.velocity > 10) this.velocity = 10
     }
 
     this.position.y += Math.sin(this.flightDirection) * this.velocity
     this.position.x += Math.cos(this.flightDirection) * this.velocity
 
-    if (this.position.x < -60) this.position.x = mapWidth;      // Wychodzi z lewej → pojawia się po prawej
-    if (this.position.x > mapWidth) this.position.x = -60;      // Wychodzi z prawej → pojawia się po lewej
-    if (this.position.y < -60) this.position.y = mapHeight;     // Wychodzi z góry → pojawia się na dole
-    if (this.position.y > mapHeight) this.position.y = -60;     // Wychodzi z dołu → pojawia się na górze
-
+    //sprawdzanie i korygacja gdy poza mapą, jeśli nie został właśnie rozbity
+    if(!this.crashed){
+      let position = outsideMapCheck(this.position.x, this.position.y)
+      this.position.x = position.x
+      this.position.y = position.y
+    }
+    
     //ustalanie hitboxów
     this.hitBoxes = []
     this.hitBoxes.push({ x: (this.position.x + Math.cos(this.rotation) * 32), y: (this.position.y + Math.sin(this.rotation) * 32) }) //dziób
@@ -276,11 +278,27 @@ class Ship {
         let distance = Math.sqrt((top.x - asteroid.position.x) ** 2 + (top.y - asteroid.position.y) ** 2)
         if (distance <= asteroid.collisionDistance) {
           asteroid.destruction()
+          this.collision()
         }
       });
     });
   }
-
+  collision(){
+    this.crashed = true
+    this.position.x = mapWidth*5
+    this.position.y = mapHeight*5
+    this.lives -= 1
+    this.velocity = 0
+    document.getElementById("livesLeft")!.innerHTML = this.lives.toString()
+    if (this.lives>0){
+      setTimeout(() => {
+        this.reset()
+      }, 2000);
+    } else {
+      document.getElementById("score2")!.innerHTML = score.toString()
+      document.getElementById("gameOver")!.style.display = "block";
+    }
+  }
   shoot() {
     console.log('shoooot', gameObjectsArr);
 
@@ -288,6 +306,14 @@ class Ship {
     let bulletY = this.position.y + Math.sin(this.rotation) * 32
 
     this.bullets.push(new Bullet(img, spriteSheetData.bullet2, { x: bulletX, y: bulletY }, { x: Math.cos(this.rotation), y: Math.sin(this.rotation) }))
+  }
+  reset(){
+    this.position.x = 600
+    this.position.y = 400
+    this.rotation = 0
+    this.velocity = 0
+    this.flightDirection = 0
+    this.crashed = false
   }
 }
 

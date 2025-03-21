@@ -1,4 +1,4 @@
-/* Import nowoczesnej czcionki */
+/* Import czcionki */
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
 
 /* Ustawienia ogólne */
@@ -10,51 +10,98 @@ body {
   color: #80d0ff;
   text-align: center;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 100vh;
+}
+
+/* Główne okno gry */
+#game {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 1200px;
+  height: 100vh;
+}
+
+/* Pasek na górze - zawiera Speed, SCORE i LIVES */
+#topBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+  height: 70px;
+  padding: 10px 20px;
   position: relative;
 }
 
-/* Styl dla canvasa */
+/* Speed Box (stała szerokość, bez napisu) */
+#speedBox {
+  width: 110px;  /* Nie zmienia szerokości */
+  height: 50px;  /* Powiększony kafelek */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(128, 208, 255, 0.1);
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(128, 208, 255, 0.5);
+  font-size: 28px;
+}
+
+/* Prędkość */
+#speed {
+  color: #80d0ff;
+  font-weight: bold;
+}
+
+/* SCORE (idealnie na środku) */
+#score {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 50px;  /* Powiększona czcionka */
+  font-weight: bold;
+  color: #ffd700;
+  text-shadow: 0 0 15px rgba(255, 215, 0, 1);
+}
+
+/* Życia po prawej */
+#lives {
+  font-size: 28px;
+  font-weight: bold;
+}
+
+/* Canvas z ograniczoną szerokością */
 canvas {
-  width: 1200px;
-  height: 800px;
+  width: 100%;
+  max-width: 1200px;
+  height: auto;
+  aspect-ratio: 3 / 2; /* Zachowuje proporcję 1200:800 */
   background: rgba(0, 0, 0, 0.5);
   border: 2px solid #80d0ff;
   box-shadow: 0 0 20px rgba(128, 208, 255, 0.8);
 }
 
-/* HUD - Prędkość na środku, życie nad lewym rogiem canvasu */
-#hud {
+/* Styl dla komunikatu GAME OVER */
+#gameOver {
   position: absolute;
-  top: 20px;
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%);
-  font-size: 24px;
-}
-
-#speed {
-  padding: 10px 20px;
-  background: rgba(128, 208, 255, 0.1);
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(128, 208, 255, 0.5);
-  text-align: center;
-  width: 120px;
-  color: #80d0ff;
-}
-
-#lives {
-  position: absolute;
-  top: 20px;
-  left: calc(50% - 600px);
-  padding: 10px 20px;
-  font-size: 26px;
+  transform: translate(-50%, -50%);
+  font-size: 60px;
   font-weight: bold;
-  color: #80d0ff;
-  text-shadow: 0 0 10px rgba(128, 208, 255, 0.8);
-} 
+  color: #ff4040;
+  text-shadow: 0 0 20px rgba(255, 64, 64, 1);
+  background: rgba(0, 0, 0, 0.8);
+  padding: 20px 40px;
+  border: 3px solid #ff4040;
+  border-radius: 15px;
+  display: none; /* Domyślnie ukryty */
+}
 
 /* Animowane gwiazdy w tle */
 @keyframes stars {
