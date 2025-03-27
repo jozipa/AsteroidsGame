@@ -3,10 +3,10 @@ import { GameObject } from "./modules/ObjectClasses";
 import { mapWidth, mapHeight } from "./main";
 
 export function outsideMapCheck(x: number, y: number){
-    if (x < -60) x = mapWidth;      // Wychodzi z lewej → pojawia się po prawej
-    if (x > mapWidth) x = -60;      // Wychodzi z prawej → pojawia się po lewej
-    if (y < -60) y = mapHeight;     // Wychodzi z góry → pojawia się na dole
-    if (y > mapHeight) y = -60;     // Wychodzi z dołu → pojawia się na górze
+    if (x < -60) x = mapWidth;      
+    if (x > mapWidth) x = -60;      
+    if (y < -60) y = mapHeight;     
+    if (y > mapHeight) y = -60;    
     return {x: x,y: y}
 }
 
@@ -75,6 +75,7 @@ export function keysEvent() {
                     ship.rotationDirection = 0;
                 }
                 break;
+            
         }
     });
 }

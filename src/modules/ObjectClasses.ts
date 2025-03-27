@@ -301,11 +301,12 @@ class Ship {
   }
   shoot() {
     console.log('shoooot', gameObjectsArr);
-
-    let bulletX = this.position.x + Math.cos(this.rotation) * 32
-    let bulletY = this.position.y + Math.sin(this.rotation) * 32
-
-    this.bullets.push(new Bullet(img, spriteSheetData.bullet2, { x: bulletX, y: bulletY }, { x: Math.cos(this.rotation), y: Math.sin(this.rotation) }))
+    if(this.bullets.length<3){
+      let bulletX = this.position.x + Math.cos(this.rotation) * 32
+      let bulletY = this.position.y + Math.sin(this.rotation) * 32
+  
+      this.bullets.push(new Bullet(img, spriteSheetData.bullet2, { x: bulletX, y: bulletY }, { x: Math.cos(this.rotation), y: Math.sin(this.rotation) }))
+    }
   }
   reset(){
     this.position.x = 600
