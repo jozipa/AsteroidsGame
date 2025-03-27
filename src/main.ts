@@ -24,8 +24,8 @@ const gameLoop = (timestamp: number) => {
 
     drawGame(ctx);
 
-    //setTimeout(requestAnimationFrame, 1000 / 60, gameLoop);
-    requestAnimationFrame(gameLoop)
+    setTimeout(requestAnimationFrame, 1000 / 90, gameLoop);
+    //requestAnimationFrame(gameLoop)
 };
 
 
@@ -45,6 +45,7 @@ function drawGame(ctx: CanvasRenderingContext2D) {
     gameObjectsArr.forEach(element => {
         element.draw(ctx)
     });
+
     speed.innerText = ship.velocity.toFixed(2);
 }
 

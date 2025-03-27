@@ -1,6 +1,7 @@
 import spriteData from '../spritesheet.json'
 import { addNewObject } from '../utils';
-import { GameObject, Ship } from './ObjectClasses';
+import { GameObject } from './ObjectClasses';
+import { Ship } from './Ship';
 
 export interface Position {
     x: number;
@@ -49,7 +50,7 @@ export function loadGameObjects(): Promise<void> {
             spriteSheetData.bigRock.forEach((frame) => {
                 addNewObject(gameObjectsArr, img, frame, "Big")
             })
-            
+
             resolve();
         };
         img.onerror = (error) => {
