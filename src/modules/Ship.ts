@@ -7,14 +7,14 @@ class Ship {
     private image: HTMLImageElement;
     private visualData: Frame[];
     private position: Position
-    private skin: number
+    public skin: number
     private rotation: number = 0; // Kąt obrotu w radianach
-    private rotationDirection: number = 0 //  -1 - lewo  0 - brak   1 - prawo  
+    public rotationDirection: number = 0 //  -1 - lewo  0 - brak   1 - prawo  
     public velocity: number = 0
     private flightDirection: number = 0
     public bullets: Bullet[] = []
     private hitBoxes: Position[] = []
-    private lives: number = 3
+    public lives: number = 3
     public crashed: Boolean = false
     public score: number = 0
 
@@ -46,30 +46,10 @@ class Ship {
             shipSkin.w,
             shipSkin.h
         );
-
         ctx.restore(); // Przywróć stan canvasu
 
         // Rysowanie pocisków
         this.bullets.forEach((bullet) => bullet.draw(ctx));
-
-        // // Rysowanie białych kropek w określonych punktach
-        // this.drawDot(ctx, this.position.x + Math.cos(this.rotation) * 32, this.position.y + Math.sin(this.rotation) * 32);//dziób
-        // //pozycja srodka - cosinus rotacji razy odleglosc(ta sama prosta)+cos rotacji +90 aby trafić pod kątem prostym na róg statku
-        // this.drawDot(ctx, (this.position.x - Math.cos(this.rotation) * 16) + Math.cos(this.rotation + (Math.PI / 2)) * 16, (this.position.y - Math.sin(this.rotation) * 16) + Math.sin(this.rotation + (Math.PI / 2)) * 16);
-        // this.drawDot(ctx, (this.position.x - Math.cos(this.rotation) * 16) - Math.cos(this.rotation + (Math.PI / 2)) * 16, (this.position.y - Math.sin(this.rotation) * 16) - Math.sin(this.rotation + (Math.PI / 2)) * 16);
-
-        ctx.beginPath();
-        ctx.arc(mapWidth / 2, mapHeight / 2, 200, 0, Math.PI * 2);
-        ctx.strokeStyle = "white";
-        ctx.stroke();
-    }
-
-    // Funkcja pomocnicza do rysowania kropek
-    drawDot(ctx: CanvasRenderingContext2D, x: number, y: number): void {
-        ctx.fillStyle = "white";
-        ctx.beginPath();
-        ctx.arc(x, y, 3, 0, Math.PI * 2); // Kropka o promieniu 3
-        ctx.fill();
     }
 
     // Poruszanie statku
@@ -159,11 +139,12 @@ class Ship {
         if (this.lives > 0) {
             setTimeout(() => {
 
-
-                if (this.freeSpawnCheck()) {
-                    this.respawn()
-                }
-
+                let freeSpawnPending = setInterval(() => {
+                    if(this.freeSpawnCheck()){
+                        clearInterval(freeSpawnPending)
+                        this.respawn()
+                    }
+                }, 1);
 
             }, 2000);
         } else {
@@ -177,7 +158,7 @@ class Ship {
         let dupa = true
         gameObjectsArr.forEach(asteroid => {
             let distance = Math.sqrt((mapWidth / 2 - asteroid.position.x) ** 2 + (mapHeight / 2 - asteroid.position.y) ** 2)
-            if (distance <= 200) {
+            if (distance <= 70) {
                 console.log(distance);
                 dupa = false
             }

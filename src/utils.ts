@@ -11,6 +11,9 @@ export function outsideMapCheck(x: number, y: number){
 }
 
 
+
+
+
 export function addNewObject(gameArr: Object[], img: HTMLImageElement, sprite: Frame, type: string): void {
     const randomAngleRadians = Math.random() * Math.PI * 2;
     let velocity = (Math.random() * 3) + 0.1
@@ -38,8 +41,6 @@ export function addChildrenObject(gameArr: Object[], img: HTMLImageElement, spri
 
         gameArr.push(new GameObject(img, sprite[skin], newPosition, { x: Math.cos(randomAngleRadians), y: Math.sin(randomAngleRadians) }, velocity, type, collisionDistance))
     }
-    console.log(gameArr);
-
 }
 
 

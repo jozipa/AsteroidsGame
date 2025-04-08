@@ -1,4 +1,5 @@
 import spriteData from '../spritesheet.json'
+import { mapHeight, mapWidth } from '../main';
 import { addNewObject } from '../utils';
 import { GameObject } from './ObjectClasses';
 import { Ship } from './Ship';
@@ -43,14 +44,8 @@ let ship: Ship;
 export function loadGameObjects(): Promise<void> {
     return new Promise((resolve, reject) => {
         img.onload = () => {
-            ship = new Ship(img, spriteSheetData.ship, { x: 600, y: 400 }, 0)
-            spriteSheetData.bigRock.forEach((frame) => {
-                addNewObject(gameObjectsArr, img, frame, "Big")
-            })
-            spriteSheetData.bigRock.forEach((frame) => {
-                addNewObject(gameObjectsArr, img, frame, "Big")
-            })
-
+            ship = new Ship(img, spriteSheetData.ship, { x: mapWidth/2, y: mapHeight/2 }, 0)
+            asteroidsGenerator()
             resolve();
         };
         img.onerror = (error) => {
@@ -59,6 +54,22 @@ export function loadGameObjects(): Promise<void> {
     });
 }
 
+export function restartGame(){
+    gameObjectsArr = []
+    ship = new Ship(img, spriteSheetData.ship, { x: mapWidth/2, y: mapHeight/2 }, 0)
+    asteroidsGenerator()
+    document.getElementById("score")!.innerHTML = ship.score.toString()
+    document.getElementById("livesLeft")!.innerHTML = ship.lives.toString()
+}
+
+
+export function asteroidsGenerator(){
+    for(let i = 0; i<2; i++){
+        spriteSheetData.bigRock.forEach((frame) => {
+            addNewObject(gameObjectsArr, img, frame, "Big")
+        })
+    }
+}
 
 
 

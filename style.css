@@ -120,3 +120,22 @@ body::before {
   opacity: 0.5;
   animation: stars 60s linear infinite;
 }
+
+#restartButton {
+  margin-top: 20px;
+  padding: 10px 30px;
+  font-size: 24px;
+  font-family: 'Orbitron', sans-serif;
+  background: rgba(255, 64, 64, 0.2);
+  color: #ff4040;
+  border: 2px solid #ff4040;
+  border-radius: 10px;
+  cursor: pointer;
+  text-shadow: 0 0 10px rgba(255, 64, 64, 0.7);
+  transition: all 0.3s ease;
+}
+
+#restartButton:hover {
+  background: rgba(255, 64, 64, 0.4);
+  box-shadow: 0 0 15px rgba(255, 64, 64, 0.8);
+}
